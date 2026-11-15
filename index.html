@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Factory Layout Editor</title>
+  </head>
+  <body>
+    <header id="toolbar">
+      <div class="brand">🏭 Factory Layout</div>
+      <input id="docName" class="doc-name" type="text" maxlength="100" title="レイアウト名" />
+      <div class="tb-group">
+        <button data-action="new" title="新規作成">新規</button>
+        <button data-action="open" title="開く (Ctrl+O)">開く</button>
+        <button data-action="save" title="保存 (Ctrl+S)">保存</button>
+        <button data-action="saveAs" title="名前を付けて保存 (Ctrl+Shift+S)">別名保存</button>
+      </div>
+      <div class="tb-group">
+        <button data-action="undo" title="元に戻す (Ctrl+Z)">↶</button>
+        <button data-action="redo" title="やり直し (Ctrl+Y)">↷</button>
+      </div>
+      <div class="tb-group">
+        <button data-action="export" class="primary" title="DXF / USD に出力">エクスポート</button>
+      </div>
+      <div class="tb-group views">
+        <span class="tb-label">視点</span>
+        <button data-view="perspective">3D</button>
+        <button data-view="top">上面</button>
+        <button data-view="front">正面</button>
+        <button data-view="side">側面</button>
+      </div>
+      <label class="tb-check"><input id="toggleLabels" type="checkbox" checked /> ラベル</label>
+    </header>
+
+    <div id="layout">
+      <aside id="palette">
+        <h2>パーツ</h2>
+        <p class="hint">ドラッグして配置（ダブルクリックで画面中央に追加）</p>
+        <div id="partList"></div>
+      </aside>
+
+      <main id="viewport">
+        <div id="help">
+          左ドラッグ: 視点回転 / パーツ移動　右ドラッグ: パン　ホイール: ズーム<br />
+          R / Shift+R: 回転　Del: 削除　Ctrl+D: 複製　Esc: 選択解除
+        </div>
+        <div id="status"></div>
+      </main>
+
+      <aside id="inspector">
+        <section id="props"></section>
+        <section>
+          <h2>配置済みパーツ <span id="partCount" class="count"></span></h2>
+          <ul id="objectList"></ul>
+        </section>
+      </aside>
+    </div>
+
+    <dialog id="exportDialog">
+      <form method="dialog">
+        <h2>エクスポート</h2>
+        <fieldset>
+          <legend>形式</legend>
+          <label><input type="radio" name="format" value="dxf" checked /> DXF（CAD 用, R12, mm 単位）</label>
+          <label><input type="radio" name="format" value="usd" /> USD（.usda, Isaac Sim / Omniverse 用, m 単位, Z-up）</label>
+        </fieldset>
+        <fieldset>
+          <legend>共通</legend>
+          <label><input type="checkbox" name="building" checked /> 建屋（床・壁・柱）を含める</label>
+        </fieldset>
+        <fieldset data-for="dxf">
+          <legend>DXF オプション</legend>
+          <label><input type="checkbox" name="dxf3d" checked /> 3D 形状（3DFACE）</label>
+          <label><input type="checkbox" name="dxfFoot" checked /> 平面外形・名称（2D レイアウト図）</label>
+          <label><input type="checkbox" name="dxfGlass" /> スケルトンの透明パネルも含める</label>
+        </fieldset>
+        <fieldset data-for="usd" hidden>
+          <legend>USD オプション</legend>
+          <label><input type="checkbox" name="usdFloor" checked /> 床にコリジョンを付与</label>
+          <label><input type="checkbox" name="usdParts" /> パーツに静的コリジョンを付与</label>
+        </fieldset>
+        <div class="dlg-buttons">
+          <button value="cancel" formnovalidate>キャンセル</button>
+          <button value="ok" class="primary">出力</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div id="toast"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
